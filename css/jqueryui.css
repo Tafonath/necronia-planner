@@ -1,0 +1,8 @@
+    .ui-selectmenu-menu .ui-menu-icons.class-icon .ui-menu-item-wrapper {
+      padding: 0.5em 0 0.5em 3em;
+    }
+    .ui-selectmenu-menu .ui-menu-icons.class-icon .ui-menu-item .ui-menu-item-wrapper .class-icon {
+      height: 24px;
+      width: 24px;
+      top: 0.1em;
+    }

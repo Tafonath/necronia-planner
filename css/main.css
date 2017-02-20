@@ -1,0 +1,269 @@
+body{
+	background: url('images/body-background.png');
+	margin: 0;
+	color: #EAEAEA;
+	font-family: 'Verdana';
+}
+
+li{
+	list-style: none;
+}
+
+.eq-highlight{
+	box-shadow: 0 0 10px 2px rgb(32, 81, 123);
+}
+
+.eq-item-dropdown{
+	height: 22px;
+	line-height: 22px;
+	vertical-align: middle;
+}
+
+.vocation-img{
+	height: 22px;
+	line-height: 22px;
+	vertical-align: middle;
+}
+
+.main-container{
+	width: 1280px;
+	min-height: 900px;
+	margin: auto;
+}
+
+.left-column{
+	width: 25%;
+	float: left;
+	padding: 1em;
+	box-sizing: border-box;
+	border: 1px solid #FFF;
+}
+
+.char-level{
+	width: 45px;
+}
+
+.char-eq{
+	height: 165px;
+	width: 174px;
+	margin: auto;
+	margin-top: 1em;
+	background-image: url("images/eq-background.png");
+	position: relative;
+}
+
+.slot-amulet{
+	top: 17px;
+	left: 33px;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	cursor: pointer;
+}
+
+.slot-head{
+	top: 7px;
+	left: 71px;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	overflow: visible;
+	cursor: pointer;
+}
+
+.eq-current-selected-item-image{
+	width: 32px;
+	height: 32px;
+	position: absolute;
+}
+
+.slot-backpack{
+	top: 17px;
+	left: 109px;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	cursor: pointer;
+}
+
+.slot-left-hand{
+	top: 53px;
+	left: 33px;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	cursor: pointer;
+}
+
+.slot-chest{
+	top: 43px;
+	left: 71px;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	cursor: pointer;
+}
+
+.slot-right-hand{
+	top: 53px;
+	left: 109px;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	cursor: pointer;
+}
+
+.slot-ring{
+	top: 89px;
+	left: 33px;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	cursor: pointer;
+}
+
+.slot-legs{
+	top: 79px;
+	left: 71px;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	cursor: pointer;
+}
+
+.slot-gadget{
+	top: 89px;
+	left: 109px;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	cursor: pointer;
+}
+
+.slot-boots{
+	top: 115px;
+	left: 71px;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	cursor: pointer;
+}
+
+.mid-column{
+	width: 55%;
+	float: left;
+	box-sizing: border-box;
+	border: 1px solid #FFF;
+}
+
+.eq-select-item-container{
+	padding: 25px 20px 20px 0px;
+}
+
+.eq-select-item-container .current-selected{
+	vertical-align: middle;
+}
+
+.eq-current-item-image-container{
+	width: 32px;
+	height: 32px;
+	background: url('images/empty_slot.png') no-repeat; 
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.current-tip{
+	font-size: 12px;
+	color: #888;
+}
+
+.eq-select-item-container .current-header span{
+	font-size: 16px;
+}
+
+.current-header{
+	vertical-align: middle;
+	margin-left: 12px;
+	display: inline-block;
+}
+
+#equipment-tab .option-box{
+	padding-left: 20px;
+	font-size: 12px;
+	box-sizing: border-box;
+	width: 48%;
+	display: inline-block;
+}
+
+#skills-tab input{
+	width: 80px;
+	float: right;
+	background-color: #000;
+	color: #ccc;
+	border: 1px solid #333;
+}
+
+#skills-tab ul{
+	padding: 0;
+}
+
+#skills-tab li + li{
+	margin-top: 10px;
+}
+
+
+.right-column{
+	width: 20%;
+	float: left;
+	box-sizing: border-box;
+	border: 1px solid #FFF;
+	text-align: center;
+}
+
+.stat-section h3{
+	height: 33px;
+	box-sizing: border-box;
+	font-weight: normal;
+	display: block;
+	cursor: pointer;
+	position: relative;
+	margin: -1px 0 0 0;
+	padding: .2em 1.5em;
+	text-align: center;
+	min-height: 0;
+	font-size: 19px;
+	background: linear-gradient(to bottom, rgb(26, 85, 117) 0%,rgb(1, 65, 111) 50%,rgb(26, 94, 147) 51%,rgb(38, 108, 159) 100%);
+	box-shadow: inset 25px 0 25px -15px #121212,inset -25px 0 25px -15px #121212;
+}
+
+.stat-section ul{
+	padding: 4px 12px;
+	margin: 0;
+}
+
+.stat-section li{
+	list-style: none;
+	display: flex;
+}
+
+.stat-section ul.flex li > span:first-of-type{
+	text-align: left;
+	flex-grow: 1;
+}
+
+.stat-section ul.flex li > span:nth-of-type(2){
+	flex-shrink: 0;
+}
+
+.tooltip-necronia{
+	border: #205b71 1px solid;
+	border-radius: 5px;
+	background: rgba(11,30,48,0.5);
+	color: #FFF;
+	font-weight: bold;
+	text-align: center;
+}
+
+.tooltip-necronia .qtip-content{
+	text-align: center;
+}
