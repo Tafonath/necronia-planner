@@ -1,6 +1,7 @@
 NecroniaCalculator.items.spellbooks = [
   {
     "name":"Arcane Spellbook",
+    "secondaryImage":null,
     "defense":6,
     "defenseMod":null,
     "armor":null,
@@ -15,7 +16,7 @@ NecroniaCalculator.items.spellbooks = [
     "soulPerShoot":null,
     "damage":null,
     "damageType":null,
-    "flavorText":"It contains knowledge of novice arcane arts. You regret getting the newbie edition, it doesn't even contain any useful spells.",
+    "flavorText":"It contains knowledge of novice arcane arts. You regret getting the newbie edition, it doesn\'t even contain any useful spells.",
     "weight":45.00,
     "baseHitChance":null,
     "maxHitChance":null,
@@ -33,6 +34,9 @@ NecroniaCalculator.items.spellbooks = [
     "hands":null,
     "enchantable":null,
     "enchanted":null,
+    "bonus":{
+        "mana":20
+    },
     "itemclass":"Body Equipment",
     "primarytype":"Spellbooks",
     "secondarytype":null,
@@ -40,6 +44,7 @@ NecroniaCalculator.items.spellbooks = [
 },
 {
     "name":"Flaremonk Spellbook",
+    "secondaryImage":null,
     "defense":7,
     "defenseMod":null,
     "armor":null,
@@ -74,6 +79,9 @@ NecroniaCalculator.items.spellbooks = [
     "hands":null,
     "enchantable":null,
     "enchanted":null,
+    "bonus":{
+        "manaPerSec":0.25
+    },
     "itemclass":"Body Equipment",
     "primarytype":"Spellbooks",
     "secondarytype":null,
@@ -81,6 +89,7 @@ NecroniaCalculator.items.spellbooks = [
 },
 {
     "name":"Novice Spellbook",
+    "secondaryImage":null,
     "defense":4,
     "defenseMod":null,
     "armor":null,
@@ -118,6 +127,7 @@ NecroniaCalculator.items.spellbooks = [
     "hands":null,
     "enchantable":"no",
     "enchanted":"no",
+    "bonus":null,
     "itemclass":"Body Equipment",
     "primarytype":"Spellbooks",
     "secondarytype":null,
@@ -125,6 +135,7 @@ NecroniaCalculator.items.spellbooks = [
 },
 {
     "name":"Runebook of Toxicity",
+    "secondaryImage":null,
     "defense":11,
     "defenseMod":null,
     "armor":null,
@@ -159,6 +170,52 @@ NecroniaCalculator.items.spellbooks = [
     "hands":null,
     "enchantable":null,
     "enchanted":null,
+    "bonus":{
+        "mana":55
+    },
+    "itemclass":"Body Equipment",
+    "primarytype":"Spellbooks",
+    "secondarytype":null,
+    "duration":null
+},
+{
+    "name":"Sage's Spellbook",
+    "secondaryImage":null,
+    "defense":9,
+    "defenseMod":null,
+    "armor":null,
+    "movementSpeed":null,
+    "dodge":null,
+    "resists":null,
+    "levelRequired":20,
+    "accuracy":null,
+    "attack":null,
+    "elementalattack":null,
+    "manaPerShoot":null,
+    "soulPerShoot":null,
+    "damage":null,
+    "damageType":null,
+    "flavorText":"A spellbook that holds many wisdoms of the olden times. Even a few tips on flirting with the daughters of some guy named K'wahalundus.",
+    "weight":47.00,
+    "baseHitChance":null,
+    "maxHitChance":null,
+    "charges":null,
+    "crit":null,
+    "lifesteal":null,
+    "volume":null,
+    "vocation":[
+        'Mage',
+        'Spellcaster',
+        'Saint'
+    ],
+    "stackable":null,
+    "hands":null,
+    "enchantable":null,
+    "enchanted":null,
+    "bonus":{
+        "wizardry":1,
+        "mana":30
+    },
     "itemclass":"Body Equipment",
     "primarytype":"Spellbooks",
     "secondarytype":null,

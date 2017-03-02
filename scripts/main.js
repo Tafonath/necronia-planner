@@ -4,7 +4,6 @@ NecroniaCalculator.items.weapons = {};
 NC = NecroniaCalculator;
 
 var newCharacter = {
-  level: 1,
   health: 150,
   mana: 5,
   capacity: 520.00,
@@ -15,21 +14,40 @@ var newCharacter = {
   dodgeChance: 5,
   armor: 0,
   defense: 0,
+
+  level: 1,
+  wizardry: 0,
+  mashing: 10,
+  slashing: 10,
+  chopping: 10,
+  rangery: 10,
+  shielding: 10,
+  chaos: 10,
+  rage: 10,
+  blacksmithing: 10,
+  mining: 10,
+  lumberjacking: 10,
+  fishing: 10,
+
   physicalRes: 0,
-  coldRes: 0,
+  iceRes: 0,
   fireRes: 0,
   energyRes: 0,
   earthRes: 0,
   deathRes: 0,
   holyRes: 0,
+  venomRes: 0,
   lifeDrainRes: 0,
+
   eney: 1,
   vitoaa: 1,
   lupol: 1,
   vitoab: 1,
   aoni: 1,
   consumptionPoints: 1,
+
   vocation: null,
+
   amulet:null,
   head:null,
   backpack:null,
@@ -39,10 +57,13 @@ var newCharacter = {
   ring:null,
   legs:null,
   gadget:null,
-  boots:null
+  boots:null,
+
+  quiver:null,
+  relicBag:null
 }
 
-var characterEquipmentPieces = ['amulet', 'head', 'backpack', 'leftHand', 'chest', 'rightHand', 'ring', 'legs', 'gadget', 'boots'];
+var characterEquipmentPieces = ['amulet', 'head', 'backpack', 'leftHand', 'chest', 'rightHand', 'ring', 'legs', 'gadget', 'boots', 'quiver'];
 
 var promotion = { 
   basehp:175,
@@ -80,18 +101,29 @@ function updateStats(){
   $('.soul').text(String(Character.soulPoints));
   $('.movementSpeed').text(String(Character.movementSpeed));
 
+  $('.level').text(String(Character.level));
+  $('.wizardry').text(String(Character.wizardry));
+  $('.mashing').text(String(Character.mashing));
+  $('.slashing').text(String(Character.slashing));
+  $('.chopping').text(String(Character.chopping));
+  $('.rangery').text(String(Character.rangery));
+  $('.shielding').text(String(Character.shielding));
+  $('.chaos').text(String(Character.chaos));
+  $('.rage').text(String(Character.rage));
+
   $('.armor').text(String(Character.armor));
   $('.defense').text(String(Character.defense));
   $('.chc').text(String(Character.criticalChance)+'%');
   $('.dodgec').text(String(Character.dodgeChance)+'%');
 
   $('.PhysicalRes').text(String(Character.physicalRes)+'%');
-  $('.ColdRes').text(String(Character.coldRes)+'%');
+  $('.IceRes').text(String(Character.iceRes)+'%');
   $('.FireRes').text(String(Character.fireRes)+'%');
   $('.EnergyRes').text(String(Character.energyRes)+'%');
   $('.EarthRes').text(String(Character.earthRes)+'%');
   $('.DeathRes').text(String(Character.deathRes)+'%');
   $('.HolyRes').text(String(Character.holyRes)+'%');
+  $('.VenomRes').text(String(Character.venomRes)+'%');
   $('.LifeDrainRes').text(String(Character.lifeDrainRes)+'%');
 }
 
@@ -120,16 +152,54 @@ function setCharacterHealth(){
   else{
     Character.health = promotion.basehp + ((Character.level*parseInt(getVocationObject(Character.vocation).gainhp))-parseInt(getVocationObject(Character.vocation).gainhp)) + (Character.vitoaa * vitoaA.hp);
   }
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.hp))
+        Character.health += Character[characterEquipmentPieces[i]].bonus.hp
+    }
+  };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.hp)){
+        Character.health += Character.relicBag[i].bonus.hp
+      }
+    }
+  }
+
   updateStats();
 }
 
 function setCharacterMana(){
+  Character.mana = newCharacter.mana;
+
   if(Character.vocation == "Warrior" || Character.vocation == "Ranger" || Character.vocation == "Mage"){
     Character.mana = newCharacter.mana + ((Character.level*parseInt(getVocationObject(Character.vocation).gainmana))-parseInt(getVocationObject(Character.vocation).gainmana)) + (Character.vitoab * vitoaB.mana);
   }
   else{
     Character.mana = promotion.basemana + ((Character.level*parseInt(getVocationObject(Character.vocation).gainmana))-parseInt(getVocationObject(Character.vocation).gainmana)) + (Character.vitoab * vitoaB.mana);
   }
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.mana))
+        Character.mana += Character[characterEquipmentPieces[i]].bonus.mana
+    }
+  };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.mana)){
+        Character.mana += Character.relicBag[i].bonus.mana
+      }
+    }
+  }
+
   updateStats();
 }
 
@@ -144,7 +214,27 @@ function setCharacterSoul(){
 }
 
 function setCharacterMovementSpeed(){
-  Character.movementSpeed = parseInt(getVocationObject(Character.vocation).basespeed) + (Character.eney * aoni.soul);
+  Character.movementSpeed = newCharacter.movementSpeed;
+
+  Character.movementSpeed = parseInt(getVocationObject(Character.vocation).basespeed) + (Character.eney * 1);
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].movementSpeed))
+        Character.movementSpeed += Character[characterEquipmentPieces[i]].movementSpeed
+    }
+  };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].movementSpeed)){
+        Character.movementSpeed += Character.relicBag[i].movementSpeed
+      }
+    }
+  }
+
   updateStats();
 }
 
@@ -173,10 +263,20 @@ function setCharacterDefense(){
 function setCharacterCriticalChance(){
   Character.criticalChance = newCharacter.criticalChance;
 
+  //eq
   for (var i = 0; i < characterEquipmentPieces.length; i++) {
     if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]]))
       Character.criticalChance += Character[characterEquipmentPieces[i]].crit
   };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.crit)){
+        Character.criticalChance += Character.relicBag[i].bonus.crit
+      }
+    }
+  }
 
   updateStats();
 }
@@ -184,10 +284,20 @@ function setCharacterCriticalChance(){
 function setCharacterDodgeChance(){
   Character.dodgeChance = newCharacter.dodgeChance;
 
+  //eq
   for (var i = 0; i < characterEquipmentPieces.length; i++) {
     if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]]))
       Character.dodgeChance += Character[characterEquipmentPieces[i]].dodge
   };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.dodge)){
+        Character.dodgeChance += Character.relicBag[i].bonus.dodge
+      }
+    }
+  }
 
   updateStats();
 }
@@ -207,15 +317,15 @@ function setCharacterPhysicalRes(){
   updateStats();
 }
 
-function setCharacterColdRes(){
-  Character.coldRes = newCharacter.coldRes;
+function setCharacterIceRes(){
+  Character.iceRes = newCharacter.iceRes;
 
   for (var i = 0; i < characterEquipmentPieces.length; i++) {
     if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]]) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].resists))
     {
-      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].resists.cold))
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].resists.ice))
       {
-        Character.coldRes += Character[characterEquipmentPieces[i]].resists.cold
+        Character.iceRes += Character[characterEquipmentPieces[i]].resists.ice
       }
     }
   }
@@ -305,43 +415,261 @@ function setCharacterLifeDrainRes(){
     {
       if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].resists.lifeDrain))
       {
-        Character.lifeDrainRes += Character[characterEquipmentPieces[i]].resists.lifeDrain
+        Character.lifeDrainRes += Character[characterEquipmentPieces[i]].resists.life
       }
     }
   }
   updateStats();
 }
 
+function setCharacterVenomRes(){
+  Character.venomRes = newCharacter.venomRes;
+
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]]) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].resists))
+    {
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].resists.venom))
+      {
+        Character.venomRes += Character[characterEquipmentPieces[i]].resists.venom
+      }
+    }
+  }
+  updateStats();
+}
  
-function onLevelChange(){
-  Character.level = parseInt($('.level').val());
-  setCharacterHealth();
-  setCharacterMana();
-  setCharacterCap();
+function setCharacterLevel(){
+  Character.level = parseInt($('.skill-level').val());
+  updateStats();
 }
 
-function onEneyChange(){
-  Character.eney = parseInt($('.eney').val());
-  setCharacterMovementSpeed();
+function setCharacterWizardry(){
+  Character.wizardry = newCharacter.wizardry;
+
+  Character.wizardry = parseInt($('.skill-wizardry').val());
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.wizardry))
+        Character.wizardry += Character[characterEquipmentPieces[i]].bonus.wizardry
+    }
+  };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.wizardry)){
+        Character.wizardry += Character.relicBag[i].bonus.wizardry
+      }
+    }
+  }
+
+  updateStats();
 }
 
-function onVitoaAChange(){
-  Character.vitoaa = parseInt($('.vitoa.a').val());
-  setCharacterHealth();
+function setCharacterMashing(){
+  Character.mashing = newCharacter.mashing;
+
+  Character.mashing = parseInt($('.skill-mashing').val());
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.mashing))
+        Character.mashing += Character[characterEquipmentPieces[i]].bonus.mashing
+    }
+  };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.mashing)){
+        Character.mashing += Character.relicBag[i].bonus.mashing
+      }
+    }
+  }
+
+  updateStats();
 }
 
-function onLupolChange(){
-  //handle
+function setCharacterSlashing(){
+  Character.slashing = newCharacter.slashing;
+
+  Character.slashing = parseInt($('.skill-slashing').val());
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.slashing))
+        Character.slashing += Character[characterEquipmentPieces[i]].bonus.slashing
+    }
+  };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.slashing)){
+        Character.slashing += Character.relicBag[i].bonus.slashing
+      }
+    }
+  }
+
+  updateStats();
 }
 
-function onVitoaBChange(){
-  Character.vitoab = parseInt($('.vitoa.b').val());
-  setCharacterMana();
+function setCharacterChopping(){
+  Character.chopping = newCharacter.chopping;
+
+  Character.chopping = parseInt($('.skill-chopping').val());
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.chopping))
+        Character.chopping += Character[characterEquipmentPieces[i]].bonus.chopping
+    }
+  };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.chopping)){
+        Character.chopping += Character.relicBag[i].bonus.chopping
+      }
+    }
+  }
+
+  updateStats();
 }
 
-function onAoniChange(){
-  Character.aoni = parseInt($('.aoni').val());
-  setCharacterSoul();
+function setCharacterRangery(){
+  Character.rangery = newCharacter.rangery;
+
+  Character.rangery = parseInt($('.skill-rangery').val());
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.rangery))
+        Character.rangery += Character[characterEquipmentPieces[i]].bonus.rangery
+    }
+  };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.rangery)){
+        Character.rangery += Character.relicBag[i].bonus.rangery
+      }
+    }
+  }
+
+  updateStats();
+}
+
+function setCharacterShielding(){
+  Character.shielding = newCharacter.shielding;
+
+  Character.shielding = parseInt($('.skill-shielding').val());
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.shielding))
+        Character.shielding += Character[characterEquipmentPieces[i]].bonus.shielding
+    }
+  };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.shielding)){
+        Character.shielding += Character.relicBag[i].bonus.shielding
+      }
+    }
+  }
+
+  updateStats();
+}
+
+function setCharacterChaos(){
+  Character.chaos = newCharacter.chaos;
+
+  Character.chaos = parseInt($('.skill-chaos').val());
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.chaos))
+        Character.chaos += Character[characterEquipmentPieces[i]].bonus.chaos
+    }
+  };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.chaos)){
+        Character.chaos += Character.relicBag[i].bonus.chaos
+      }
+    }
+  }
+
+  updateStats();
+}
+
+function setCharacterRage(){
+  Character.rage = newCharacter.rage;
+
+  Character.rage = parseInt($('.skill-rage').val());
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.rage))
+        Character.rage += Character[characterEquipmentPieces[i]].bonus.rage
+    }
+  };
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.rage)){
+        Character.rage += Character.relicBag[i].bonus.rage
+      }
+    }
+  }
+
+  updateStats();
+}
+
+function setCharacterEney(){
+  Character.eney = parseInt($('.skill-eney').val());
+  recalculateStats();
+  updateStats();
+}
+
+function setCharacterVitoaA(){
+  Character.vitoaa = parseInt($('.skill-vitoa.a').val());
+  recalculateStats();
+  updateStats();
+}
+
+function setCharacterLupol(){
+  Character.lupol = parseInt($('.skill-lupol').val());
+  recalculateStats();
+  updateStats();
+}
+
+function setCharacterVitoaB(){
+  Character.vitoab = parseInt($('.skill-vitoa.b').val());
+  recalculateStats();
+  updateStats();
+}
+
+function setCharacterAoni(){
+  Character.aoni = parseInt($('.skill-aoni').val());
+  recalculateStats();
+  updateStats();
 }
 
 function recalculateStats(){
@@ -350,44 +678,35 @@ function recalculateStats(){
   setCharacterCap();
   setCharacterSoul();
   setCharacterMovementSpeed();
+
+  setCharacterLevel();
+  setCharacterWizardry();
+  setCharacterMashing();
+  setCharacterSlashing();
+  setCharacterChopping();
+  setCharacterRangery();
+  setCharacterShielding();
+  setCharacterChaos();
+  setCharacterRage();
+
   setCharacterArmor();
   setCharacterDefense();
   setCharacterCriticalChance();
   setCharacterDodgeChance();
+
   setCharacterPhysicalRes();
-  setCharacterColdRes();
+  setCharacterIceRes();
   setCharacterFireRes();
   setCharacterEnergyRes();
   setCharacterEarthRes();
   setCharacterDeathRes();
   setCharacterHolyRes();
+  setCharacterVenomRes();
   setCharacterLifeDrainRes();
 }
 
 function resetAllStats(){
-  Character.level              = newCharacter.level;
-  Character.health             = newCharacter.health;
-  Character.mana               = newCharacter.mana;
-  Character.capacity           = newCharacter.capacity;
-  Character.soulPoints         = newCharacter.soulPoints;
-  Character.barrier            = newCharacter.barrier;
-  Character.movementSpeed      = newCharacter.movementSpeed;
-  Character.criticalChance     = newCharacter.criticalChance;
-  Character.dodgeChance        = newCharacter.dodgeChance;
-  Character.armor              = newCharacter.armor;
-  Character.physicalRes        = newCharacter.physicalRes;
-  Character.coldRes            = newCharacter.coldRes;
-  Character.fireRes            = newCharacter.fireRes;
-  Character.energyRes          = newCharacter.energyRes;
-  Character.earthRes           = newCharacter.earthRes;
-  Character.deathRes           = newCharacter.deathRes;
-  Character.holyRes            = newCharacter.holyRes;
-  Character.lifeDrainRes       = newCharacter.lifeDrainRes;
-  Character.eney               = newCharacter.eney;
-  Character.vitoaa             = newCharacter.vitoaa;
-  Character.lupol              = newCharacter.lupol;
-  Character.vitoab             = newCharacter.vitoab;
-  Character.aoni               = newCharacter.aoni;
-  Character.consumptionPoints  = newCharacter.consumptionPoints;
+  //do zrobienia
+  Character = jQuery.extend(true, {}, newCharacter);
   updateStats();
 }

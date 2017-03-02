@@ -3,10 +3,21 @@ body{
 	margin: 0;
 	color: #EAEAEA;
 	font-family: 'Verdana';
+	min-height: 100%;
+	display: flex;
+  	flex-direction: column;
+}
+
+html{
+	height: 100%;
 }
 
 li{
 	list-style: none;
+}
+
+.h3-header{
+	margin: 10px 0px 10px 0px;
 }
 
 .eq-highlight{
@@ -27,8 +38,14 @@ li{
 
 .main-container{
 	width: 1280px;
-	min-height: 900px;
+	min-height: 100%;
 	margin: auto;
+	flex: 1;
+}
+
+.main-container:after {
+  content: "";
+  display: block;
 }
 
 .left-column{
@@ -36,7 +53,8 @@ li{
 	float: left;
 	padding: 1em;
 	box-sizing: border-box;
-	border: 1px solid #FFF;
+	background: #050F17;
+	box-shadow: 0 0 10px 10px #091017;
 }
 
 .char-level{
@@ -153,7 +171,7 @@ li{
 	width: 55%;
 	float: left;
 	box-sizing: border-box;
-	border: 1px solid #FFF;
+	margin-bottom: 100px;
 }
 
 .eq-select-item-container{
@@ -195,6 +213,66 @@ li{
 	display: inline-block;
 }
 
+#quiver-image{
+	background: url(images/Quiver.png);
+	width: 195px;
+	height: 69px;
+}
+
+#eq-item-ammunition{
+	vertical-align: middle;
+}
+
+#quiver{
+	margin: 40px 15px 40px 30px;
+}
+
+.empty-slot{
+	width: 32px;
+	height: 32px;
+	background: url('images/empty_slot.png') no-repeat; 
+	float: left;
+}
+
+.relic-slot{
+	width: 32px;
+	height: 32px;
+	float: left;
+}
+
+#relic_bag{
+	min-height: 100px;
+}
+
+#relic-bag-selectors{
+	overflow: hidden;
+	min-height: 20px;
+}
+
+#relic-bag-selectors div{
+	margin: 0px 0px 10px 0px;
+}
+
+#relic-bag-selectors div .remove_relic{
+	width: 16px;
+	height: 16px;
+	background: url(images/cross_red.png);
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+#relic-bag-selectors div .add_relic{
+	width: 16px;
+	height: 16px;
+	background: url(images/plus_green.png);
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
 #skills-tab input{
 	width: 80px;
 	float: right;
@@ -216,8 +294,9 @@ li{
 	width: 20%;
 	float: left;
 	box-sizing: border-box;
-	border: 1px solid #FFF;
 	text-align: center;
+	background: #050F17;
+	box-shadow: 0 0 10px 10px #091017;
 }
 
 .stat-section h3{
@@ -267,3 +346,83 @@ li{
 .tooltip-necronia .qtip-content{
 	text-align: center;
 }
+
+.site-footer, .main-container:after{
+	text-align: center;
+	background: #194f77;
+}
+
+.site-footer a{
+	color: #c7e022;
+}
+
+/*//////////////////// FANCY PANEL /////////////////////////*/
+
+.flex-mp-container > * {padding: 10px 0;}
+.mp-navigation {padding: 0;}
+#featured-media {padding-top: 0;}
+.necronia-panel {position: relative; height:100%; max-width: 191px; float:left; margin-right: 30px;}
+.np-content {padding: 1px; position: relative;}
+.np-middle::before {left: 0;}
+.np-middle::after {right: 0;}
+.np-middle::before, .np-middle::after {content: ""; z-index: 1;}
+.np-top::before, .np-top::after, .np-bottom::before, .np-bottom::after {z-index: 2;}
+.np-top::before, .np-top::after, .np-middle::before, .np-middle::after, .np-bottom::before, .np-bottom::after {position: absolute;}
+.np-bottom::before, .np-bottom::after {bottom: 0;}
+.np-top::before, .np-bottom::before {left: 0;}
+.np-top::after, .np-bottom::after {right: 0;}
+.np-wrap { display: inline-block; }
+.np-body {
+  position: relative; 
+  margin: 20px;
+}
+.np-header {
+  margin: 10px 0;
+  text-align: center;
+}
+.np-text {
+  max-width: 70ex;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1em;
+}
+.np-text p { text-align: justify; }
+
+.np-simple .np-top::before     {width: 47px; height: 47px;}   /* top left corner */
+.np-simple .np-top::after      {width: 47px; height: 47px;}   /* top right corner */
+.np-simple .np-bottom::before  {width: 47px; height: 47px;}   /* bottom left corner */
+.np-simple .np-bottom::after   {width: 47px; height: 47px;}   /* bottom right corner */
+.np-simple .np-top::before {content: url(images/top_left.png);}
+.np-simple .np-top {background: url(images/horizontal_up.png);}
+.np-simple .np-top::after {content: url(images/top_right.png);}
+.np-simple .np-middle::before {background: url(images/vertical_left.png);}
+.np-simple .np-middle {background: #0a1b2b;}
+.np-simple .np-middle::after {background: url(images/vertical_right.png);}
+.np-simple .np-bottom::before {content: url(images/bottom_left.png);}
+.np-simple .np-bottom {background: url(images/horizontal_down.png);}
+.np-simple .np-bottom::after {content: url(images/bottom_right.png);}
+
+.np-simple {min-height: 44px;}      /* = */
+.np-simple .np-top {
+  height: 21px;                     /* = top border height */
+  margin: 0 11px;                   /* = left & right border width */
+}
+.np-simple .np-middle::before {
+  height: calc(100% - 32px);        /* = panel height - top border height - bottom border height @READY */
+  width: 11px;                      /* = left border width */
+}
+.np-simple .np-middle {
+  height: calc(100% - 32px);        /* = @READY above */
+  margin: 0 11px;                   /* = left & right border width */
+}
+.np-simple .np-middle::after {
+  top: 21px;                        /* = top border height */
+  height: calc(100% - 32px);        /* = @READY above */
+  width: 11px;                      /* = right border width */
+}
+.np-simple .np-bottom {
+  margin: 0 11px;                   /* = left & right border width */
+  height: 11px;                     /* = bottom border height */
+}
+
+.np-middle-padding{padding:1px 4px 2px 5px; min-width:191px; min-height: 32px;}

@@ -224,6 +224,12 @@ $( document ).ready(function() {
       Character.boots = searchForItemInDB(category, item_name);
       recalculateStats()
     }
+    else if(category == "Quiver")
+    {
+      category = "ammunition";
+      Character.quiver = searchForItemInDB(category, item_name);
+      recalculateStats()
+    }
   }
 
   function removeItemFromCharacter(category){
@@ -304,6 +310,12 @@ $( document ).ready(function() {
       $(".slot-boots").empty();
       $(".slot-boots").css("background", "none");
       Character.boots = null;
+      recalculateStats()
+    }
+
+    else if(category == "Quiver")
+    {
+      Character.quiver = null;
       recalculateStats()
     }
   }
@@ -404,6 +416,16 @@ $( document ).ready(function() {
   $("#eq-item-category").on("change", function (e) {
    loadItems($("#eq-item-category option:selected").val());
    $('#eq-item').trigger("change");
+
+   //highlight eq
+   $( ".slot-amulet, .slot-head, .slot-backpack, .slot-left-hand, .slot-chest, .slot-right-hand, .slot-ring, .slot-legs, .slot-gadget, .slot-boots" ).css('box-shadow', 'none');
+   for(i=0; 10> i; i++)
+   {
+    $('.char-eq div').each(function(){
+      if($(this).data("slot") == $("#eq-item-category").val())
+        $(this).css('box-shadow', '0 0 10px #1A92A1');
+    });
+   }
   });
 
   //On item category change
@@ -428,8 +450,103 @@ $( document ).ready(function() {
 
   //On eq slot click
   $( ".slot-amulet, .slot-head, .slot-backpack, .slot-left-hand, .slot-chest, .slot-right-hand, .slot-ring, .slot-legs, .slot-gadget, .slot-boots" ).on('click', function() {
+    //highlight eq
+    $( ".slot-amulet, .slot-head, .slot-backpack, .slot-left-hand, .slot-chest, .slot-right-hand, .slot-ring, .slot-legs, .slot-gadget, .slot-boots" ).css('box-shadow', 'none');
+    $(this).css('box-shadow', '0 0 10px #1A92A1');
+
     var name = $(this).data("slot");
     $("#eq-item-category").val(name).trigger("change")
+  });
+
+
+  ///////////////// * Quiver * ///////////////////
+  $("#eq-item-ammunition").select2({
+    placeholder: "Select item",
+    templateResult: formatItems,
+    templateSelection: formatItems,
+    allowClear: true
+  });
+
+  function loadQuiverItems(){
+    for (var i = 0; NC.items.ammunition.length > i;  i++) {
+      $('#eq-item-ammunition').append('<option value="'+NC.items.ammunition[i].name+'">'+NC.items.ammunition[i].name+'</option>');
+    }
+
+  }
+
+  $('#eq-item-ammunition').on('change', function(){
+    if($("#eq-item-ammunition option:selected").val() != null){
+      addItemToCharacter("Quiver",$("#eq-item-ammunition option:selected").val())
+    }
+    else{
+      removeItemFromCharacter("Quiver")
+    }
+  });
+
+  ///////////////// * Relic Bag * ///////////////////
+
+  function fillWithRelics(relicsArray){
+    $('.np-middle-padding div:not(:last)').remove();
+    for (var i = 0; i < relicsArray.length; i++) {
+      $(".np-middle-padding div:last").before('<div class="relic-slot"></div>');
+      $('.np-middle-padding div').eq(-2).css('background', 'url(css/images/'+relicsArray[i].secondaryImage+'.png) no-repeat')
+    };
+  }
+
+  function loadRelics(obj){
+    for (var i = 0; NC.items.relics.length > i;  i++) {
+      obj.eq(-1).append('<option value="'+NC.items.relics[i].name+'">'+NC.items.relics[i].name+'</option>');
+    }
+  }
+
+  function initializeSelect2(selectElementObj) {
+    selectElementObj.select2({
+      placeholder: "Select item",
+      templateResult: formatItems,
+      templateSelection: formatItems,
+      allowClear: true
+    });
+  }
+
+  // initialize all of them on page load (if theres any)
+  // $(".select-to-select2").each(function() {
+  //   initializeSelect2($(this));
+  // });
+
+  $('.add_relic').on('click', function(){
+    $("#relic-bag-selectors div:last").before('<div><span class="remove_relic"></span><select class="eq-item-relic" style="width: 300px;"></select></div>');
+    initializeSelect2($('#relic-bag-selectors div .eq-item-relic').eq(-1));
+    loadRelics($('#relic-bag-selectors div .eq-item-relic').eq(-1));
+    $('#relic-bag-selectors div .eq-item-relic').eq(-1).val("").trigger("change");
+  });
+
+  $(document).on('click', '.remove_relic', function(){
+    $(this).parent().remove();
+
+    if($('#relic-bag-selectors').children().length == 1){
+      Character.relicBag = null;
+      $('.np-middle-padding div:not(:last)').remove();
+    }
+    
+    $('.eq-item-relic').trigger("change");
+    recalculateStats();
+  });
+
+  $(document).on('change', '.eq-item-relic', function(){
+    relics = [];
+
+    $('.eq-item-relic').each(function(){
+      if($(this).val()){
+        relics.push(searchForItemInDB('relics',$(this).val()))
+      }
+    });
+
+    if(relics.length > 0){
+      Character.relicBag = relics;
+      fillWithRelics(Character.relicBag);
+    }
+
+    recalculateStats();
   });
 
   jQuery.fn.ForceNumericOnly =
@@ -464,14 +581,14 @@ $( document ).ready(function() {
   }
 
   function createNewSkill(name, min, max, val, appnedTo){
-    text = '<li><span class="skills-'+name.toLowerCase()+'">'+name+'</span><input class="skills-input '+name.toLowerCase()+'" min="'+min+'" max="'+max+'" value="'+val+'" type="number"></li>';
+    text = '<li><span class="skills-'+name.toLowerCase()+'">'+name+'</span><input class="skills-input skill-'+name.toLowerCase()+'" min="'+min+'" max="'+max+'" value="'+val+'" type="number"></li>';
     appnedTo = "#skills-"+appnedTo;
     $(appnedTo).append(text);
   }
 
   createSkillsHeader("Core");
   createNewSkill("Level", 1, 999, 1, "Core");
-  createNewSkill("Wizardy", 0, 999, 0, "Core");
+  createNewSkill("Wizardry", 0, 999, 0, "Core");
 
   createSkillsHeader("Offense");
   createNewSkill("Mashing", 10, 999, 10, "Offense");
@@ -491,28 +608,65 @@ $( document ).ready(function() {
 
   $(".skills-input").ForceNumericOnly();
 
-  $( ".level" ).change(function() {
-    onLevelChange();
+  $( ".skill-level" ).change(function() {
+    setCharacterLevel();
+    recalculateStats();
   });
 
-  $( ".eney" ).change(function() {
-    onEneyChange();
+  $( ".skill-wizardry" ).change(function() {
+    setCharacterWizardry();
   });
 
-  $( ".vitoa.a" ).change(function() {
-    onVitoaAChange();
+  $( ".skill-mashing" ).change(function() {
+    setCharacterMashing();
   });
 
-  $( ".lupol" ).change(function() {
-    onLupolChange();
+  $( ".skill-slashing" ).change(function() {
+    setCharacterSlashing();
   });
 
-  $( ".vitoa.b" ).change(function() {
-    onVitoaBChange();
+  $( ".skill-chopping" ).change(function() {
+    setCharacterChopping();
   });
 
-  $( ".aoni" ).change(function() {
-    onAoniChange();
+  $( ".skill-rangery" ).change(function() {
+    setCharacterRangery();
+  });
+
+  $( ".skill-shielding" ).change(function() {
+    setCharacterShielding();
+  });
+
+  $( ".skill-chaos" ).change(function() {
+    setCharacterChaos();
+  });
+
+  $( ".skill-rage" ).change(function() {
+    setCharacterRage();
+  });
+
+  $( ".skill-eney" ).change(function() {
+    setCharacterEney();
+  });
+
+  $( ".skill-vitoa.a" ).change(function() {
+    setCharacterVitoaA();
+  });
+
+  $( ".skill-lupol" ).change(function() {
+    setCharacterLupol();
+  });
+
+  $( ".skill-vitoa.b" ).change(function() {
+    setCharacterVitoaB();
+  });
+
+  $( ".skill-aoni" ).change(function() {
+    setCharacterAoni();
+  });
+
+  $('.ui-sortable-handle').on('click', function(){
+    $(this).next().slideToggle()
   });
 
   /* Tooltips */
@@ -583,10 +737,17 @@ $( document ).ready(function() {
     },
   })
 
-//init on load
-loadVocations()
-$('#vocation').trigger("change")
-$('#eq-item-category').trigger("change")
-$('#eq-item').trigger("change")
-recalculateStats();
+//init on page load
+function initOnLoad(){
+  loadVocations();
+  $('#vocation').trigger("change");
+  $('#eq-item-category').trigger("change");
+  $('#eq-item').trigger("change");
+  loadQuiverItems();
+  $("#eq-item-ammunition").val("").trigger("change"); // force placeholder
+  $("#eq-item").val("").trigger("change"); // force placeholder
+  recalculateStats();
+}
+
+initOnLoad()
 });
