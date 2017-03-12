@@ -10,6 +10,16 @@ var newCharacter = {
   soulPoints: 100,
   barrier: 15,
   movementSpeed: 275,
+
+  attack: {
+    physical: 0,
+    ice: 0,
+    fire: 0,
+    energy: 0,
+    earth: 0,
+    death: 0,
+    holy: 0,
+  },
   criticalChance: 7,
   dodgeChance: 5,
   armor: 0,
@@ -36,8 +46,12 @@ var newCharacter = {
   earthRes: 0,
   deathRes: 0,
   holyRes: 0,
-  venomRes: 0,
   lifeDrainRes: 0,
+  manaDrainRes: 0,
+  venomRes: 0,
+
+  hpPerSec: 0,
+  manaPerSec: 0,
 
   eney: 1,
   vitoaa: 1,
@@ -47,6 +61,7 @@ var newCharacter = {
   consumptionPoints: 1,
 
   vocation: null,
+  stance: 'balanced',
 
   amulet:null,
   head:null,
@@ -62,6 +77,8 @@ var newCharacter = {
   quiver:null,
   relicBag:null
 }
+
+var Character = jQuery.extend(true, {}, newCharacter); // clone newChracter, one for base values one for display/changes
 
 var characterEquipmentPieces = ['amulet', 'head', 'backpack', 'leftHand', 'chest', 'rightHand', 'ring', 'legs', 'gadget', 'boots', 'quiver'];
 
@@ -84,8 +101,6 @@ vitoaB = {
 aoni = {
   soul: 1
 }
-
-var Character = jQuery.extend(true, {}, newCharacter); // clone newChracter, one for base values one for display/changes
 
 function checkifObjIsNotEmpty(obj){
   if(typeof obj === 'undefined' || !obj)
@@ -111,6 +126,7 @@ function updateStats(){
   $('.chaos').text(String(Character.chaos));
   $('.rage').text(String(Character.rage));
 
+  $('.attack').text(String(Character.attack.physical + Character.attack.ice + Character.attack.fire + Character.attack.energy + Character.attack.earth + Character.attack.death + Character.attack.holy));
   $('.armor').text(String(Character.armor));
   $('.defense').text(String(Character.defense));
   $('.chc').text(String(Character.criticalChance)+'%');
@@ -123,8 +139,12 @@ function updateStats(){
   $('.EarthRes').text(String(Character.earthRes)+'%');
   $('.DeathRes').text(String(Character.deathRes)+'%');
   $('.HolyRes').text(String(Character.holyRes)+'%');
-  $('.VenomRes').text(String(Character.venomRes)+'%');
   $('.LifeDrainRes').text(String(Character.lifeDrainRes)+'%');
+  $('.ManaDrainRes').text(String(Character.manaDrainRes)+'%');
+  $('.VenomRes').text(String(Character.venomRes)+'%');
+
+  $('.HealthPerSec').text(String(Character.hpPerSec));
+  $('.ManaPerSec').text(String(Character.manaPerSec));
 }
 
 function getVocationObject(name){
@@ -234,6 +254,36 @@ function setCharacterMovementSpeed(){
       }
     }
   }
+
+  updateStats();
+}
+
+function setCharacterAttack(){
+  Character.attack.physical = newCharacter.attack.physical;
+  Character.attack.ice = newCharacter.attack.ice;
+  Character.attack.fire = newCharacter.attack.fire;
+  Character.attack.energy = newCharacter.attack.energy;
+  Character.attack.earth = newCharacter.attack.earth;
+  Character.attack.death = newCharacter.attack.death;
+  Character.attack.holy = newCharacter.attack.holy;
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]])){
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].attack))
+        Character.attack.physical += Character[characterEquipmentPieces[i]].attack
+
+      elementals = ['ice', 'fire', 'energy', 'earth', 'death', 'holy']
+      //elementals
+      for (var j = 0; j < elementals.length; j++) {
+        if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].elementalattack) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].elementalattack[elementals[j]]))
+          Character.attack[elementals[j]] += Character[characterEquipmentPieces[i]].elementalattack[elementals[j]]
+      }
+    }
+  };
+
+  //update tooltip
+  $('.attack').parent().qtip('option', 'content.text', '<div class="physical">Physical: '+Character.attack.physical+'</div>'+ '<div class="ice">Ice: '+Character.attack.ice+'</div>'+ '<div class="fire">Fire: '+Character.attack.fire+'</div>'+ '<div class="energy">Energy: '+Character.attack.energy+'</div>'+ '<div class="earth">Earth: '+Character.attack.earth+'</div>'+ '<div class="death">Death: '+Character.attack.death+'</div>'+ '<div class="holy">Holy: '+Character.attack.holy+'</div>')
 
   updateStats();
 }
@@ -416,6 +466,21 @@ function setCharacterLifeDrainRes(){
       if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].resists.lifeDrain))
       {
         Character.lifeDrainRes += Character[characterEquipmentPieces[i]].resists.life
+      }
+    }
+  }
+  updateStats();
+}
+
+function setCharacterManaDrainRes(){
+  Character.manaDrainRes = newCharacter.manaDrainRes;
+
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]]) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].resists))
+    {
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].resists.manadrain))
+      {
+        Character.manaDrainRes += Character[characterEquipmentPieces[i]].resists.manadrain
       }
     }
   }
@@ -642,6 +707,12 @@ function setCharacterRage(){
   updateStats();
 }
 
+function setCharacterConsumptionPoints(){
+  Character.consumptionPoints = newCharacter.consumptionPoints;
+
+  Character.consumptionPoints = 5 + (Character.level * 1) - Character.eney - Character.vitoaa - Character.lupol - Character.vitoab - Character.aoni;
+}
+
 function setCharacterEney(){
   Character.eney = parseInt($('.skill-eney').val());
   recalculateStats();
@@ -672,6 +743,58 @@ function setCharacterAoni(){
   updateStats();
 }
 
+function setCharacterHpPerSec(){
+  Character.hpPerSec = newCharacter.hpPerSec;
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]]) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus))
+    {
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.hpPerSec))
+      {
+        Character.hpPerSec += Character[characterEquipmentPieces[i]].bonus.hpPerSec
+      }
+    }
+  }
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.hpPerSec)){
+        Character.hpPerSec += Character.relicBag[i].bonus.hpPerSec
+      }
+    }
+  }
+
+  updateStats();
+}
+
+function setCharacterManaPerSec(){
+  Character.manaPerSec = newCharacter.manaPerSec;
+
+  //eq
+  for (var i = 0; i < characterEquipmentPieces.length; i++) {
+    if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]]) && checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus))
+    {
+      if(checkifObjIsNotEmpty(Character[characterEquipmentPieces[i]].bonus.manaPerSec))
+      {
+        Character.manaPerSec += Character[characterEquipmentPieces[i]].bonus.manaPerSec
+      }
+    }
+  }
+
+  //relic bag
+  if(checkifObjIsNotEmpty(Character.relicBag)){
+    for(i=0; Character.relicBag.length > i; i++){
+      if(checkifObjIsNotEmpty(Character.relicBag[i].bonus) && checkifObjIsNotEmpty(Character.relicBag[i].bonus.manaPerSec)){
+        Character.manaPerSec += Character.relicBag[i].bonus.manaPerSec
+      }
+    }
+  }
+
+  updateStats();
+}
+
 function recalculateStats(){
   setCharacterHealth();
   setCharacterMana();
@@ -689,6 +812,7 @@ function recalculateStats(){
   setCharacterChaos();
   setCharacterRage();
 
+  setCharacterAttack();
   setCharacterArmor();
   setCharacterDefense();
   setCharacterCriticalChance();
@@ -701,8 +825,14 @@ function recalculateStats(){
   setCharacterEarthRes();
   setCharacterDeathRes();
   setCharacterHolyRes();
-  setCharacterVenomRes();
   setCharacterLifeDrainRes();
+  setCharacterManaDrainRes();
+  setCharacterVenomRes();
+
+  setCharacterConsumptionPoints();
+
+  setCharacterHpPerSec();
+  setCharacterManaPerSec();
 }
 
 function resetAllStats(){

@@ -58,6 +58,12 @@
           <div class="slot-boots" data-slot="Boots"></div>
         </div>
 
+        <div class="char-stance">
+          <div id="stance-offensive" data-slot="offensive"></div>
+          <div id="stance-balanced" data-slot="balanced"></div>
+          <div id="stance-defensive" data-slot="defensive"></div>
+        </div>
+
       </div>
       <div class="mid-column">
 
@@ -71,7 +77,7 @@
 
           <div id="equipment-tab">
 
-            <!-- <label class="option-box"><input id="eq-showWarnings" type="checkbox">Show all warnings</label> -->
+            <label class="option-box"><input id="eq-showWarnings" type="checkbox" checked>Show all warnings</label>
             <label class="option-box"><input id="eq-vocationItemsOnly" type="checkbox" checked>Hide items for other vocations</label>
 
             <div class="eq-select-item-container">
@@ -102,14 +108,16 @@
             </div>
 
             <div>
-              <h3 class="h3-header">Quiver</h3>
+              <h3 id="quiver-tooltip" class="h3-header">Quiver</h3>
+              <span class="eq-warning warning-quiver"></span>
               <div id="quiver">
                 <select id="eq-item-ammunition" style="width: 300px;"></select>
               </div>
             </div>
 
             <div>
-              <h3 class="h3-header">Relic Bag</h3>
+              <h3 id="rB-tooltip" class="h3-header">Relic Bag</h3>
+              <span class="eq-warning warning-relicBag"></span>
               <div id="relic_bag">
                 <div class="necronia-panel np-simple">
                   <div class="np-top"></div>
@@ -160,12 +168,18 @@
             <li><span>Shielding</span><span class="shielding"></span></li>
             <li><span>Chaos</span><span class="chaos"></span></li>
             <li><span>Rage</span><span class="rage"></span></li>
+<!--        <li><span>Eney</span><span class="Eney"></span></li>
+            <li><span>Vitoa A</span><span class="vitoaA"></span></li>
+            <li><span>Lupol</span><span class="lupol"></span></li>
+            <li><span>Vitoa B</span><span class="vitoaB"></span></li>
+            <li><span>Aoni</span><span class="Aoni"></span></li> -->
           </ul>
         </div>
 
         <div class="stat-section">
           <h3 class="ui-sortable-handle">Combat</h3>
           <ul class="flex" style="display: block;">
+            <li><span>Attack</span><span class="attack"></span></li>
             <li><span>Armor</span><span class="armor"></span></li>
             <li><span>Defense</span><span class="defense"></span></li>
             <li><span>Critical Chance</span><span class="chc"></span></li>
@@ -184,7 +198,16 @@
             <li><span>Death Resistance</span><span class="DeathRes"></span></li>
             <li><span>Holy Resistance</span><span class="HolyRes"></span></li>
             <li><span>Life Drain Resistance</span><span class="LifeDrainRes"></span></li>
+            <li><span>Mana Drain Resistance</span><span class="ManaDrainRes"></span></li>
             <li><span>Venom Resistance</span><span class="VenomRes"></span></li>
+          </ul>
+        </div>
+
+        <div class="stat-section">
+          <h3 class="ui-sortable-handle">Other</h3>
+          <ul class="flex" style="display: block;">
+            <li><span>HP per sec.</span><span class="HealthPerSec"></span></li>
+            <li><span>Mana per sec.</span><span class="ManaPerSec"></span></li>
           </ul>
         </div>
 

@@ -2,6 +2,15 @@ $( document ).ready(function() {
 
   $( "#tabs" ).tabs();
 
+  function changeStance(stance){
+    $('.char-stance').css('background', 'url(css/images/'+stance+'-stance.png)')
+  }
+
+  $("#stance-offensive, #stance-balanced, #stance-defensive").on("click", function (e) {
+    changeStance($(this).data("slot"));
+    Character.stance = $(this).data("slot");
+  });
+
   function loadVocations(){
     for(i = 0; NC.vocations.vocation.length > i; i ++){
       $('#vocation').append('<option value="'+NC.vocations.vocation[i].name+'">'+NC.vocations.vocation[i].name+'</option>');
@@ -25,7 +34,7 @@ $( document ).ready(function() {
   };
 
   function checkIfCheckboxIsChecked(select){
-    if($("#eq-vocationItemsOnly").is(':checked')) {
+    if($(select).is(':checked')) {
       return true;
     } 
     else {
@@ -410,6 +419,8 @@ $( document ).ready(function() {
   $("#vocation").on("change", function (e) {
     setCharacterVocation($("#vocation option:selected").val())
     $('#eq-item-category').trigger("change");
+
+    quiverWarning();
   });
 
   //On item category change
@@ -448,6 +459,12 @@ $( document ).ready(function() {
     $('#eq-item-category').trigger("change");
   });
 
+  //Warningscheckbox
+  $('#eq-showWarnings').on('change', function(){
+    relicBagWarning();
+    quiverWarning();
+  });
+
   //On eq slot click
   $( ".slot-amulet, .slot-head, .slot-backpack, .slot-left-hand, .slot-chest, .slot-right-hand, .slot-ring, .slot-legs, .slot-gadget, .slot-boots" ).on('click', function() {
     //highlight eq
@@ -458,7 +475,6 @@ $( document ).ready(function() {
     $("#eq-item-category").val(name).trigger("change")
   });
 
-
   ///////////////// * Quiver * ///////////////////
   $("#eq-item-ammunition").select2({
     placeholder: "Select item",
@@ -466,6 +482,20 @@ $( document ).ready(function() {
     templateSelection: formatItems,
     allowClear: true
   });
+
+  function quiverWarning(){
+    if(checkIfCheckboxIsChecked("#eq-showWarnings") && checkifObjIsNotEmpty(Character.quiver)){
+      if(Character.vocation == "Ranger" || Character.vocation == "Marksman" || Character.vocation == "Hunter"){
+        $('.warning-quiver').html("");
+      }
+      else{
+        $('.warning-quiver').html("Your vocation doesn't use quiver.");
+      }
+    }
+    else{
+      $('.warning-quiver').html("");
+    }
+  }
 
   function loadQuiverItems(){
     for (var i = 0; NC.items.ammunition.length > i;  i++) {
@@ -481,9 +511,25 @@ $( document ).ready(function() {
     else{
       removeItemFromCharacter("Quiver")
     }
+
+    quiverWarning();
   });
 
   ///////////////// * Relic Bag * ///////////////////
+
+  function relicBagWarning(){
+    if(checkIfCheckboxIsChecked("#eq-showWarnings") && checkifObjIsNotEmpty(Character.relicBag)){
+      if(Character.relicBag.length > (3 + Math.floor(Character.level/20))){
+        $('.warning-relicBag').html("You can hold max " + (3 + Math.floor(Character.level/20)) + " relics");
+      }
+      else{
+        $('.warning-relicBag').html("");
+      }
+    }
+    else{
+      $('.warning-relicBag').html("");
+    }
+  }
 
   function fillWithRelics(relicsArray){
     $('.np-middle-padding div:not(:last)').remove();
@@ -518,6 +564,7 @@ $( document ).ready(function() {
     initializeSelect2($('#relic-bag-selectors div .eq-item-relic').eq(-1));
     loadRelics($('#relic-bag-selectors div .eq-item-relic').eq(-1));
     $('#relic-bag-selectors div .eq-item-relic').eq(-1).val("").trigger("change");
+    relicBagWarning();
   });
 
   $(document).on('click', '.remove_relic', function(){
@@ -547,6 +594,7 @@ $( document ).ready(function() {
     }
 
     recalculateStats();
+    relicBagWarning();
   });
 
   jQuery.fn.ForceNumericOnly =
@@ -576,7 +624,9 @@ $( document ).ready(function() {
   /////////////////////* Skills tab */////////////////////////
 
   function createSkillsHeader(name){
-    text = "<h3>"+name+"</h3><ul id='skills-"+name+"'></ul>";
+    text = "<h3 class='h3-header'>"+name+"</h3>"+
+    "<span class='eq-warning warning-"+name+"'></span>"+
+    "<ul id='skills-"+name+"'></ul>";
     $('#skills-tab').append(text);
   }
 
@@ -584,6 +634,16 @@ $( document ).ready(function() {
     text = '<li><span class="skills-'+name.toLowerCase()+'">'+name+'</span><input class="skills-input skill-'+name.toLowerCase()+'" min="'+min+'" max="'+max+'" value="'+val+'" type="number"></li>';
     appnedTo = "#skills-"+appnedTo;
     $(appnedTo).append(text);
+  }
+
+  function consumptionPointsLeft(){
+    $('.warning-Utility').html('Consumption points left: ' + Character.consumptionPoints);
+    if(Character.consumptionPoints >= 0){
+      $('.warning-Utility').css('color', 'green');
+    }
+    else{
+      $('.warning-Utility').css('color', 'red');
+    }
   }
 
   createSkillsHeader("Core");
@@ -611,6 +671,8 @@ $( document ).ready(function() {
   $( ".skill-level" ).change(function() {
     setCharacterLevel();
     recalculateStats();
+    $('.np-middle-padding').trigger("change");
+    consumptionPointsLeft();
   });
 
   $( ".skill-wizardry" ).change(function() {
@@ -647,22 +709,27 @@ $( document ).ready(function() {
 
   $( ".skill-eney" ).change(function() {
     setCharacterEney();
+    consumptionPointsLeft();
   });
 
   $( ".skill-vitoa.a" ).change(function() {
     setCharacterVitoaA();
+    consumptionPointsLeft();
   });
 
   $( ".skill-lupol" ).change(function() {
     setCharacterLupol();
+    consumptionPointsLeft();
   });
 
   $( ".skill-vitoa.b" ).change(function() {
     setCharacterVitoaB();
+    consumptionPointsLeft();
   });
 
   $( ".skill-aoni" ).change(function() {
     setCharacterAoni();
+    consumptionPointsLeft();
   });
 
   $('.ui-sortable-handle').on('click', function(){
@@ -670,6 +737,72 @@ $( document ).ready(function() {
   });
 
   /* Tooltips */
+
+  $('#stance-offensive').qtip({
+    content: {
+      text: "You attack at your full potential.<br>Fists,melee and ranged weapons have 10% more max. damage.<br>Mage spells have 10% more max. damage.<br>Reduces your total defense by 20%."
+    },
+    style: { classes: 'tooltip-necronia' },
+    position: {
+        target: 'mouse',
+        adjust: { mouse: true }
+    },
+  })
+
+  $('#stance-balanced').qtip({
+    content: {
+      text: "You pay attention both to damage output and survivability.<br>The max. damage of your spells, melee, and ranged weapons is regular.<br>Your defense is regular."
+    },
+    style: { classes: 'tooltip-necronia' },
+    position: {
+        target: 'mouse',
+        adjust: { mouse: true }
+    },
+  })
+
+  $('#stance-defensive').qtip({
+    content: {
+      text: "You focus on defending yourself, rather than dealing damage.<br>Fists, melee and ranged weapons max. damage reduced by 25%.<br>Mage spells deal 10% less total damage.<br>Increases your total defense by 35%.<br>Heavily reduces the damage taken from [Brute] spells.<br>(e.g. Stone Giant's [Heavy Rocksmash])"
+    },
+    style: { classes: 'tooltip-necronia' },
+    position: {
+        target: 'mouse',
+        adjust: { mouse: true }
+    },
+  })
+
+  $('#quiver-tooltip').qtip({
+    content: {
+      text: "Quiver is a containter for your<br>ammunition. Ammunition must be placed into the quiver<br>in order to be fired by your ranged weapon."
+    },
+    style: { classes: 'tooltip-necronia' },
+    position: {
+        target: 'mouse',
+        adjust: { mouse: true }
+    },
+  })
+
+  $('#rB-tooltip').qtip({
+    content: {
+      text: "Relics are ancient artifacts<br>that enchance character's performance.<br>They can be found all throughout<br> the world of Necronia.Place a relic into this relic<br> bag to obtain its bonuses.<br><br>A new slot is added to your relic bag<br> every 20 levels."
+    },
+    style: { classes: 'tooltip-necronia' },
+    position: {
+        target: 'mouse',
+        adjust: { mouse: true }
+    },
+  })
+
+  $('.skills-wizardry').qtip({
+    content: {
+      text: 'Known also as magic level.'
+    },
+    style: { classes: 'tooltip-necronia' },
+    position: {
+        target: 'mouse',
+        adjust: { mouse: true }
+    },
+  })
 
   $('.skills-eney').qtip({
     content: {
@@ -726,11 +859,17 @@ $( document ).ready(function() {
     },
   })
 
-  $('.skills-wizardy').qtip({
+  $('.attack').parent().qtip({
     content: {
-      text: 'Known also as magic level.'
-    },
-    style: { classes: 'tooltip-necronia' },
+        text: '<div class="physical">Physical: '+Character.attack.physical+'</div>'+
+              '<div class="ice">Ice: '+Character.attack.ice+'</div>'+
+              '<div class="fire">Fire: '+Character.attack.fire+'</div>'+
+              '<div class="energy">Energy: '+Character.attack.energy+'</div>'+
+              '<div class="earth">Earth: '+Character.attack.earth+'</div>'+
+              '<div class="death">Death: '+Character.attack.death+'</div>'+
+              '<div class="holy">Holy: '+Character.attack.holy+'</div>'
+    },   
+    style: { classes: 'tooltip-necronia2' },
     position: {
         target: 'mouse',
         adjust: { mouse: true }
@@ -746,6 +885,7 @@ function initOnLoad(){
   loadQuiverItems();
   $("#eq-item-ammunition").val("").trigger("change"); // force placeholder
   $("#eq-item").val("").trigger("change"); // force placeholder
+  consumptionPointsLeft();
   recalculateStats();
 }
 
